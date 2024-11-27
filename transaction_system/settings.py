@@ -164,6 +164,8 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 CSRF_TRUSTED_ORIGINS = ["http://localhost", "http://127.0.0.1"]
 
+LOGIN_URL = "/auth/login/"
+
 
 if not DEBUG:  # Production settings
     SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
@@ -174,3 +176,4 @@ else:  # Development settings
     SECURE_SSL_REDIRECT = False
     CSRF_COOKIE_SECURE = False
     SESSION_COOKIE_SECURE = False
+    SESSION_COOKIE_AGE = 3600
