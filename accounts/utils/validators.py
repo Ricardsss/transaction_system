@@ -1,4 +1,4 @@
-from ..models import User
+from ..models import User, Account
 
 
 def validate_input(data, required_fields):
@@ -10,7 +10,11 @@ def validate_input(data, required_fields):
 
 
 def validate_role(role):
-    return role not in dict(User.ROLE_CHOICES)
+    return role in dict(User.ROLE_CHOICES)
+
+
+def validate_status(status):
+    return status in dict(Account.STATUS_CHOICES)
 
 
 def validate_account_data(data):

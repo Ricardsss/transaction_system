@@ -4,8 +4,9 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 import json
 
-from ..models import Account
-from ..utils.validators import validate_account_data
+
+from ..models import Account, AuditLog
+from ..utils import validate_account_data, validate_input, validate_status
 
 
 class AccountListCreateView(LoginRequiredMixin, View):
@@ -26,7 +27,7 @@ class AccountListCreateView(LoginRequiredMixin, View):
         return JsonResponse({"accounts": account_data})
 
     def post(self, request):
-        data = json.loads(request.body)
+        data = json.loads(request.body) if request.body else {}
         validation_errors = validate_account_data(data)
         if validation_errors:
             return JsonResponse({"errors": validation_errors}, status=400)
@@ -52,3 +53,25 @@ class AccountDetailUpdateView(LoginRequiredMixin, View):
             "created_at": account.created_at,
         }
         return JsonResponse(account_data)
+
+    def patch(self, request, pk):
+        data = json.loads(request.body) if request.body else {}
+        account = get_object_or_404(Account, pk=pk, user=request.user)
+        errors = validate_input(data, ["status"])
+        if errors:
+            return JsonResponse({"errors": errors}, status=400)
+        if not validate_status(data["status"]):
+            return JsonResponse(
+                {"error": "Invalid status value. Must be active, inactive, or closed."},
+                status=400,
+            )
+        if data["status"] == "closed":
+            try:
+                account.close_account()
+                account.save()
+            except Exception as e:
+                return JsonResponse({"error": str(e)}, status=400)
+        else:
+            account.status = data["status"]
+            account.save()
+        return JsonResponse({"message": "Account updated successfully!"}, status=200)

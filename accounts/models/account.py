@@ -68,7 +68,7 @@ class Account(models.Model):
     @transaction.atomic
     def withdraw(self, amount):
         if amount <= 0:
-            raise ValueError("Withdrawal amount must be negative.")
+            raise ValueError("Withdrawal amount must be positive.")
         if amount > self.balance:
             raise ValueError("Insufficient funds.")
         self.balance -= amount
