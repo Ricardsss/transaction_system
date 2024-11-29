@@ -56,10 +56,14 @@ class Account(models.Model):
         ]
 
     def __str__(self):
-        return f"{self.account_number} - {self.account_type}"
+        return f"ID: {self.id} - Account Number: {self.account_number} - Account Type: {self.account_type}"
 
     @transaction.atomic
     def deposit(self, amount):
+        if self.status == "closed":
+            raise ValueError("Account is closed, cannot perform a deposit.")
+        if self.status == "inactive":
+            self.status = "active"
         if amount <= 0:
             raise ValueError("Deposit amount must be positive.")
         self.balance += amount
@@ -67,6 +71,8 @@ class Account(models.Model):
 
     @transaction.atomic
     def withdraw(self, amount):
+        if self.status == "closed" or self.status == "inactive":
+            raise ValueError("Account must be active to complete a withdrawal.")
         if amount <= 0:
             raise ValueError("Withdrawal amount must be positive.")
         if amount > self.balance:

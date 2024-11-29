@@ -6,7 +6,12 @@ import json
 
 
 from ..models import Account, AuditLog
-from ..utils import validate_account_data, validate_input, validate_status
+from ..utils import (
+    validate_account_data,
+    validate_input,
+    validate_status,
+    get_ip_address,
+)
 
 
 class AccountListCreateView(LoginRequiredMixin, View):
@@ -34,6 +39,13 @@ class AccountListCreateView(LoginRequiredMixin, View):
         data["user"] = request.user
         account = Account(**data)
         account.save()
+        ip_address = get_ip_address(request)
+        AuditLog.objects.create(
+            user=request.user,
+            action="Account Created",
+            ip_address=ip_address,
+            details={"account": str(account)},
+        )
         return JsonResponse(
             {"message": "Account created successfully!", "account_id": account.id},
             status=201,
@@ -65,13 +77,26 @@ class AccountDetailUpdateView(LoginRequiredMixin, View):
                 {"error": "Invalid status value. Must be active, inactive, or closed."},
                 status=400,
             )
+        ip_address = get_ip_address(request)
         if data["status"] == "closed":
             try:
                 account.close_account()
                 account.save()
+                AuditLog.objects.create(
+                    user=request.user,
+                    action=f"Account status set to {data['status']}",
+                    ip_address=ip_address,
+                    details={"account": str(account)},
+                )
             except Exception as e:
                 return JsonResponse({"error": str(e)}, status=400)
         else:
             account.status = data["status"]
             account.save()
+            AuditLog.objects.create(
+                user=request.user,
+                action=f"Account status set to {data['status']}",
+                ip_address=ip_address,
+                details={"account": str(account)},
+            )
         return JsonResponse({"message": "Account updated successfully!"}, status=200)
