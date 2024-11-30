@@ -3,6 +3,7 @@ from .validators import (
     validate_role,
     validate_status,
     validate_account_data,
+    validate_frequency,
 )
 
 

@@ -1,4 +1,4 @@
-from ..models import User, Account
+from ..models import User, Account, RecurringTransaction
 
 
 def validate_input(data, required_fields):
@@ -15,6 +15,10 @@ def validate_role(role):
 
 def validate_status(status):
     return status in dict(Account.STATUS_CHOICES)
+
+
+def validate_frequency(frequency):
+    return frequency in dict(RecurringTransaction.FREQUENCY_CHOICES)
 
 
 def validate_account_data(data):

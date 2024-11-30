@@ -5,6 +5,8 @@ from .views import (
     DepositView,
     WithdrawView,
     TransferView,
+    RecurringTransactionListCreateView,
+    RecurringTransactionUpdateCancelView,
 )
 
 
@@ -14,4 +16,14 @@ urlpatterns = [
     path("transactions/deposit/<uuid:pk>/", DepositView.as_view(), name="deposit"),
     path("transactions/withdraw/<uuid:pk>/", WithdrawView.as_view(), name="withdraw"),
     path("transactions/transfer/", TransferView.as_view(), name="transfer"),
+    path(
+        "recurring/",
+        RecurringTransactionListCreateView.as_view(),
+        name="recurring_list_create",
+    ),
+    path(
+        "recurring/<uuid:pk>/",
+        RecurringTransactionUpdateCancelView.as_view(),
+        name="recurring_update_cancel",
+    ),
 ]
