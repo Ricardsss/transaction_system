@@ -48,6 +48,7 @@ else:
 INSTALLED_APPS = [
     "whitenoise.runserver_nostatic",
     "accounts.apps.AccountsConfig",
+    "celery",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
