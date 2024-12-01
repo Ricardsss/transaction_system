@@ -9,3 +9,7 @@ db.sqlite3
 
 # macOS files
 .DS_Store
+
+# Redis and Celery files
+celerybeat-schedule.db
+dump.rdb

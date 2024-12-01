@@ -12,9 +12,9 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 import os
 import secrets
-from pathlib import Path
-
 import dj_database_url
+from pathlib import Path
+from celery.schedules import crontab
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django_celery_beat",
 ]
 
 MIDDLEWARE = [
@@ -178,3 +179,12 @@ else:  # Development settings
     CSRF_COOKIE_SECURE = False
     SESSION_COOKIE_SECURE = False
     SESSION_COOKIE_AGE = 3600
+    CELERY_BROKER_URL = "redis://localhost:6379"
+    CELERY_RESULT_BACKEND = "redis://localhost:6379"
+
+CELERY_BEAT_SCHEDULE = {
+    "process-recurring-transactions": {
+        "task": "accounts.tasks.process_recurring_transactions",
+        "schedule": crontab(minute=0, hour=0),
+    },
+}
