@@ -330,10 +330,23 @@ Response:
 ## Setup Instructions
 
 1. Clone the repository.
-2. Install dependencies: `pip install -r requirements.txt`.
-3. Run migrations: `python manage.py migrate`.
-4. Start the development server: `python manage.py runserver`.
+2. Change into the project folder
+   ```bash
+   cd transaction_system
+   ```
+3. Install the required dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+4. Run the migrations:
+   ```bash
+   python manage.py migrate
+   ```
+5. Run the Django development server:
+   ```bash
+   python manage.py runserver
+   ```
 
-## License
+## Online Access
 
-This project is licensed under the MIT License.
+This API is also accessible via Heroku. In order to reduce costs, the url is only available upon request. If you would like access to test it out, please contact me via my email address on my resume.
