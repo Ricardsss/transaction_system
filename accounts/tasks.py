@@ -2,6 +2,7 @@ from celery import shared_task
 from datetime import date
 
 from .models import RecurringTransaction
+from .utils import complete_transfer
 
 
 @shared_task()
@@ -14,9 +15,10 @@ def process_recurring_transactions():
     for transaction in transactions:
         next_date = transaction.next_execution_date()
         if next_date <= today:
-            print(
-                f"Processing transaction {transaction.id} for user {transaction.user.id}"
+            complete_transfer(
+                transaction.source_account.id,
+                transaction.destination_account.id,
+                transaction.amount,
             )
-
             transaction.last_executed = today
             transaction.save()

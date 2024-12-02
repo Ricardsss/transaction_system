@@ -4,8 +4,8 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 import json
 
-from ..models import RecurringTransaction
-from ..utils import validate_input, validate_frequency
+from ..models import RecurringTransaction, AuditLog
+from ..utils import validate_input, validate_frequency, get_ip_address
 
 
 class RecurringTransactionListCreateView(LoginRequiredMixin, View):
@@ -38,6 +38,18 @@ class RecurringTransactionListCreateView(LoginRequiredMixin, View):
             data["user"] = user
             transaction = RecurringTransaction(**data)
             transaction.save()
+            ip_address = get_ip_address(request)
+            AuditLog.objects.create(
+                user=user,
+                recurring=transaction,
+                action="Recurring Transaction Created",
+                ip_address=ip_address,
+                details={
+                    "amount": str(data["amount"]),
+                    "source_account": str(data["source_account_id"]),
+                    "destination_account": str(data["destination_account_id"]),
+                },
+            )
             return JsonResponse(
                 {
                     "message": "Recurring transaction created successfully!",
@@ -80,6 +92,13 @@ class RecurringTransactionUpdateCancelView(LoginRequiredMixin, View):
             if "description" in data:
                 transaction.description = data["description"]
             transaction.save()
+            ip_address = get_ip_address(request)
+            AuditLog.objects.create(
+                user=user,
+                recurring=transaction,
+                action="Recurring Transaction Updated",
+                ip_address=ip_address,
+            )
             return JsonResponse(
                 {"message": "Recurring transaction updated successfully!"}, status=200
             )
@@ -94,6 +113,13 @@ class RecurringTransactionUpdateCancelView(LoginRequiredMixin, View):
             )
             transaction.is_active = False
             transaction.save()
+            ip_address = get_ip_address(request)
+            AuditLog.objects.create(
+                user=user,
+                recurring=transaction,
+                action="Recurring Transaction Deleted",
+                ip_address=ip_address,
+            )
             return JsonResponse(
                 {"message": "Transaction cancelled successfully."},
                 status=200,

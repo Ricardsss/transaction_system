@@ -2,12 +2,11 @@ from django.views import View
 from django.http import JsonResponse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404
-from django.db import transaction as db_transaction
 from decimal import Decimal
 import json
 
 from ..models import Account, Transaction, AuditLog
-from ..utils import validate_role, validate_input, get_ip_address
+from ..utils import validate_role, validate_input, get_ip_address, complete_transfer
 
 
 class DepositView(LoginRequiredMixin, View):
@@ -100,29 +99,22 @@ class TransferView(LoginRequiredMixin, View):
             destination_account_id = data["destination_account_id"]
             source_account = get_object_or_404(Account, pk=source_account_id, user=user)
             destination_account = get_object_or_404(Account, pk=destination_account_id)
-            with db_transaction.atomic():
-                source_account.withdraw(amount)
-                source_account.save()
-                destination_account.deposit(amount)
-                destination_account.save()
-            transaction = Transaction.objects.create(
-                source_account=source_account,
-                destination_account=destination_account,
-                transaction_type="transfer",
-                amount=amount,
-            )
             ip_address = get_ip_address(request)
+            transaction = complete_transfer(
+                source_account_id, destination_account_id, amount
+            )
             AuditLog.objects.create(
                 user=user,
-                action="Transfer",
+                action="User Transfer",
                 transaction=transaction,
                 ip_address=ip_address,
                 details={
                     "amount": str(amount),
                     "sender": str(source_account),
-                    "receiver": str(source_account),
+                    "receiver": str(destination_account),
                 },
             )
+
             return JsonResponse({"message": "Transfer successful."}, status=200)
         except Exception as e:
             if type(e) == ValueError:

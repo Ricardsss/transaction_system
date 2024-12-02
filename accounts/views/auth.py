@@ -30,8 +30,10 @@ class RegisterView(View):
                 password=data["password"],
                 role=data["role"],
             )
+            ip_address = get_ip_address(request)
             AuditLog.objects.create(
                 user=user,
+                ip_address=ip_address,
                 action="User Registered",
                 details={"username": data["username"]},
             )
@@ -60,8 +62,12 @@ class LoginView(View):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
+            ip_address = get_ip_address(request)
             AuditLog.objects.create(
-                user=user, action="User Login", details={"username": username}
+                user=user,
+                ip_address=ip_address,
+                action="User Login",
+                details={"username": username},
             )
             return JsonResponse({"message": "Login successful"})
         return JsonResponse({"error": "Invalid credentials"}, status=400)
@@ -71,7 +77,11 @@ class LogoutView(LoginRequiredMixin, View):
     def delete(self, request):
         user = request.user
         logout(request)
+        ip_address = get_ip_address(request)
         AuditLog.objects.create(
-            user=user, action="User Logout", details={"username": user.username}
+            user=user,
+            ip_address=ip_address,
+            action="User Logout",
+            details={"username": user.username},
         )
         return JsonResponse({"message": "Logout successful"})
