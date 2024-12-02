@@ -1,4 +1,5 @@
 from django.urls import path
+
 from .views import (
     AccountListCreateView,
     AccountDetailUpdateView,
@@ -7,6 +8,8 @@ from .views import (
     TransferView,
     RecurringTransactionListCreateView,
     RecurringTransactionUpdateCancelView,
+    DisputeListCreateView,
+    DisputeUpdateView,
 )
 
 
@@ -26,4 +29,6 @@ urlpatterns = [
         RecurringTransactionUpdateCancelView.as_view(),
         name="recurring_update_cancel",
     ),
+    path("disputes/", DisputeListCreateView.as_view(), name="dispute_list_create"),
+    path("disputes/<uuid:pk>/", DisputeUpdateView.as_view(), name="dispute_update"),
 ]

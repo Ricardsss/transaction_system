@@ -47,7 +47,7 @@ class AccountListCreateView(LoginRequiredMixin, View):
             details={"account": str(account)},
         )
         return JsonResponse(
-            {"message": "Account created successfully!", "account_id": account.id},
+            {"message": "Account created successfully!", "account": account.id},
             status=201,
         )
 

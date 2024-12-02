@@ -1,4 +1,6 @@
-from ..models import User, Account, RecurringTransaction
+from django.core.exceptions import ValidationError
+
+from ..models import User, Account, RecurringTransaction, Dispute
 
 
 def validate_input(data, required_fields):
@@ -43,3 +45,11 @@ def validate_account_data(data):
     if "status" in data and data["status"] not in ["active", "inactive", "closed"]:
         errors["status"] = "Invalid status. Must be active, inactive, or closed"
     return errors
+
+
+def validate_dispute_status(status):
+    return status in dict(Dispute.STATUS_CHOICES)
+
+
+def validate_dispute_reason(reason):
+    return reason in dict(Dispute.REASON_CHOICES)

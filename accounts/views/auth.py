@@ -30,6 +30,7 @@ class RegisterView(View):
                 password=data["password"],
                 role=data["role"],
             )
+            user.save()
             ip_address = get_ip_address(request)
             AuditLog.objects.create(
                 user=user,
@@ -38,7 +39,7 @@ class RegisterView(View):
                 details={"username": data["username"]},
             )
             return JsonResponse(
-                {"message": "User registered successfully!", "user_id": user.id},
+                {"message": "User registered successfully!", "user": user.id},
                 status=201,
             )
         except IntegrityError as e:

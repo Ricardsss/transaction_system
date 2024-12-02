@@ -53,7 +53,7 @@ class RecurringTransactionListCreateView(LoginRequiredMixin, View):
             return JsonResponse(
                 {
                     "message": "Recurring transaction created successfully!",
-                    "transaction_id": transaction.id,
+                    "transaction": transaction.id,
                 },
                 status=201,
             )

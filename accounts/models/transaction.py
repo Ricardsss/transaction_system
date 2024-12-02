@@ -2,7 +2,7 @@ from django.db import models
 from django.utils.timezone import now
 import uuid
 
-from .account import Account
+from .account import Account, User
 
 
 class Transaction(models.Model):
@@ -17,6 +17,9 @@ class Transaction(models.Model):
         ("failed", "Failed"),
     )
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="transactions"
+    )
     transaction_type = models.CharField(max_length=10, choices=TRANSACTION_TYPES)
     source_account = models.ForeignKey(
         Account,

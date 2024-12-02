@@ -24,10 +24,12 @@ class DepositView(LoginRequiredMixin, View):
             account.deposit(amount)
             account.save()
             transaction = Transaction.objects.create(
+                user=user,
                 source_account=account,
                 transaction_type="deposit",
                 amount=amount,
             )
+            transaction.save()
             ip_address = get_ip_address(request)
             AuditLog.objects.create(
                 user=user,
@@ -37,7 +39,11 @@ class DepositView(LoginRequiredMixin, View):
                 details={"amount": str(amount), "account": str(account)},
             )
             return JsonResponse(
-                {"message": "Deposit successful.", "balance": account.balance},
+                {
+                    "message": "Deposit successful.",
+                    "balance": account.balance,
+                    "transaction": transaction.id,
+                },
                 status=200,
             )
         except Exception as e:
@@ -60,10 +66,12 @@ class WithdrawView(LoginRequiredMixin, View):
             account = get_object_or_404(Account, pk=pk, user=user)
             account.withdraw(amount)
             transaction = Transaction.objects.create(
+                user=user,
                 source_account=account,
                 transaction_type="withdrawal",
                 amount=amount,
             )
+            transaction.save()
             ip_address = get_ip_address(request)
             AuditLog.objects.create(
                 user=user,
@@ -73,7 +81,11 @@ class WithdrawView(LoginRequiredMixin, View):
                 details={"amount": str(amount), "account": str(account)},
             )
             return JsonResponse(
-                {"message": "Withdrawal successful.", "balance": account.balance},
+                {
+                    "message": "Withdrawal successful.",
+                    "balance": account.balance,
+                    "transaction": transaction.id,
+                },
                 status=200,
             )
         except Exception as e:
@@ -101,7 +113,7 @@ class TransferView(LoginRequiredMixin, View):
             destination_account = get_object_or_404(Account, pk=destination_account_id)
             ip_address = get_ip_address(request)
             transaction = complete_transfer(
-                source_account_id, destination_account_id, amount
+                source_account_id, destination_account_id, amount, user
             )
             AuditLog.objects.create(
                 user=user,
@@ -115,7 +127,13 @@ class TransferView(LoginRequiredMixin, View):
                 },
             )
 
-            return JsonResponse({"message": "Transfer successful."}, status=200)
+            return JsonResponse(
+                {
+                    "message": "Transfer successful.",
+                    "transaction": transaction.id,
+                },
+                status=200,
+            )
         except Exception as e:
             if type(e) == ValueError:
                 return JsonResponse({"error": str(e)}, status=400)

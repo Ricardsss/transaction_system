@@ -19,6 +19,7 @@ def process_recurring_transactions():
                 transaction.source_account.id,
                 transaction.destination_account.id,
                 transaction.amount,
+                transaction.user,
             )
             transaction.last_executed = today
             transaction.save()

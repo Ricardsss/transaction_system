@@ -12,7 +12,7 @@ def get_ip_address(request):
         return request.META.get("REMOTE_ADDR")
 
 
-def complete_transfer(source_account_id, destination_account_id, amount):
+def complete_transfer(source_account_id, destination_account_id, amount, user):
     source_account = get_object_or_404(Account, pk=source_account_id)
     destination_account = get_object_or_404(Account, pk=destination_account_id)
     with db_transaction.atomic():
@@ -21,11 +21,13 @@ def complete_transfer(source_account_id, destination_account_id, amount):
         destination_account.deposit(amount)
         destination_account.save()
     transaction = Transaction.objects.create(
+        user=user,
         source_account=source_account,
         destination_account=destination_account,
         transaction_type="transfer",
         amount=amount,
     )
+    transaction.save()
     AuditLog.objects.create(
         action="Recurring Transaction",
         transaction=transaction,

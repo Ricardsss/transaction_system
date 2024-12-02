@@ -14,5 +14,8 @@ class User(AbstractUser):
     phone_number = models.CharField(max_length=15, unique=True, null=True, blank=True)
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default="customer")
 
+    def is_employee(self):
+        return self.role == "teller" or self.role == "admin"
+
     def __str__(self):
         return self.username
