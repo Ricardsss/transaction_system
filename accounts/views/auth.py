@@ -5,8 +5,6 @@ from django.views import View
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.decorators.csrf import csrf_exempt
-from django.utils.decorators import method_decorator
 import json
 import logging
 
@@ -17,7 +15,6 @@ from ..models import AuditLog, User
 logger = logging.getLogger(__name__)
 
 
-@method_decorator(csrf_exempt, name="dispatch")
 class RegisterView(View):
     def post(self, request):
         try:
@@ -57,7 +54,6 @@ class RegisterView(View):
             return JsonResponse({"error": "Invalid JSON format."}, status=400)
 
 
-@method_decorator(csrf_exempt, name="dispatch")
 class LoginView(View):
     def post(self, request):
         try:
@@ -85,12 +81,8 @@ class LoginView(View):
             return JsonResponse({"error": "Internal server error"}, status=500)
 
 
-@method_decorator(csrf_exempt, name="dispatch")
 class LogoutView(LoginRequiredMixin, View):
     def delete(self, request):
-        logger.info(f"Referer: {request.headers.get('Referer')}")
-        logger.info("CSRF" + request.COOKIES.get("csrftoken"))
-        logger.info("Token" + request.headers.get("X-CSRFToken"))
         user = request.user
         logout(request)
         ip_address = get_ip_address(request)

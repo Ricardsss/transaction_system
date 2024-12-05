@@ -13,10 +13,10 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 import os
 import secrets
 import dj_database_url
+import logging
 from pathlib import Path
 from celery.schedules import crontab
 
-import logging
 
 logger = logging.getLogger(__name__)
 
@@ -99,7 +99,6 @@ WSGI_APPLICATION = "transaction_system.wsgi.application"
 
 
 if IS_HEROKU_APP:
-    logger.warning("HEROKUUUUUU")
     CSRF_TRUSTED_ORIGINS = [f"https://{os.environ.get('BASE_URL')}"]
     DATABASES = {
         "default": dj_database_url.config(
