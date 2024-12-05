@@ -93,8 +93,9 @@ WSGI_APPLICATION = "transaction_system.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+
 if IS_HEROKU_APP:
-    CSRF_TRUSTED_ORIGINS = ["https://BASE_URL"]
+    CSRF_TRUSTED_ORIGINS = [f"https://{os.environ.get('BASE_URL')}"]
     DATABASES = {
         "default": dj_database_url.config(
             env="DATABASE_URL",
