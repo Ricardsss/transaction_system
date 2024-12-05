@@ -37,7 +37,7 @@ SECRET_KEY = os.environ.get(
 IS_HEROKU_APP = "DYNO" in os.environ and not "CI" in os.environ
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 if not IS_HEROKU_APP:
     DEBUG = True
 
@@ -99,6 +99,7 @@ WSGI_APPLICATION = "transaction_system.wsgi.application"
 
 
 if IS_HEROKU_APP:
+    logger.warning("HEROKUUUUUU")
     CSRF_TRUSTED_ORIGINS = [f"https://{os.environ.get('BASE_URL')}"]
     DATABASES = {
         "default": dj_database_url.config(
@@ -220,7 +221,7 @@ LOGGING = {
     },
     "root": {
         "handlers": ["console"],
-        "level": "DEBUG",  # Set to DEBUG for more detailed logs; use INFO in production
+        "level": "INFO",  # Set to DEBUG for more detailed logs; use INFO in production
     },
     "django": {
         "handlers": ["console"],
