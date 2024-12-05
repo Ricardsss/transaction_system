@@ -180,6 +180,7 @@ if not DEBUG:  # Production settings
     SECURE_SSL_REDIRECT = True
     CSRF_COOKIE_SECURE = True
     SESSION_COOKIE_SECURE = True
+    SESSION_COOKIE_AGE = 86400
 else:  # Development settings
     SECURE_SSL_REDIRECT = False
     CSRF_COOKIE_SECURE = False
