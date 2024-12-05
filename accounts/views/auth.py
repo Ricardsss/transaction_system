@@ -85,10 +85,11 @@ class LoginView(View):
             return JsonResponse({"error": "Internal server error"}, status=500)
 
 
+@method_decorator(csrf_exempt, name="dispatch")
 class LogoutView(LoginRequiredMixin, View):
     def delete(self, request):
-        logger.warning("CSRF" + request.COOKIES.get("csrftoken"))
-        logger.warning("Token" + request.headers.get("X-CSRFToken"))
+        logger.info("CSRF" + request.COOKIES.get("csrftoken"))
+        logger.info("Token" + request.headers.get("X-CSRFToken"))
         user = request.user
         logout(request)
         ip_address = get_ip_address(request)

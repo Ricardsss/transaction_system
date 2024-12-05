@@ -99,7 +99,7 @@ WSGI_APPLICATION = "transaction_system.wsgi.application"
 
 
 if IS_HEROKU_APP:
-    logger.warning("HEROKUUUUUU")
+    logger.info("HEROKUUUUUU")
     CSRF_TRUSTED_ORIGINS = [f"https://{os.environ.get('BASE_URL')}"]
     DATABASES = {
         "default": dj_database_url.config(
