@@ -12,8 +12,8 @@ from ..utils import validate_input, validate_role, get_ip_address
 from ..models import AuditLog, User
 
 
+@csrf_exempt
 class RegisterView(View):
-    @csrf_exempt
     def post(self, request):
         try:
             data = json.loads(request.body) if request.body else {}
@@ -52,8 +52,8 @@ class RegisterView(View):
             return JsonResponse({"error": "Invalid JSON format."}, status=400)
 
 
+@csrf_exempt
 class LoginView(View):
-    @csrf_exempt
     def post(self, request):
         data = json.loads(request.body) if request.body else {}
         errors = validate_input(data, ["username", "password"])
