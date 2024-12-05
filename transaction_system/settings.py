@@ -38,7 +38,7 @@ if not IS_HEROKU_APP:
     DEBUG = True
 
 if IS_HEROKU_APP:
-    ALLOWED_HOSTS = ["*"]
+    ALLOWED_HOSTS = ["localhost", "127.0.0.1", "[::1]", "0.0.0.0"]
 else:
     ALLOWED_HOSTS = ["localhost", "127.0.0.1", "[::1]", "0.0.0.0"]
 
@@ -94,7 +94,7 @@ WSGI_APPLICATION = "transaction_system.wsgi.application"
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 if IS_HEROKU_APP:
-    CSRF_TRUSTED_ORIGINS = ["*"]
+    CSRF_TRUSTED_ORIGINS = ["https://BASE_URL"]
     DATABASES = {
         "default": dj_database_url.config(
             env="DATABASE_URL",
