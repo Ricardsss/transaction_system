@@ -8,9 +8,13 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 import json
+import logging
+
 
 from ..utils import validate_input, validate_role, get_ip_address
 from ..models import AuditLog, User
+
+logger = logging.getLogger(__name__)
 
 
 @method_decorator(csrf_exempt, name="dispatch")
@@ -45,6 +49,8 @@ class RegisterView(View):
                 {"message": "User registered successfully!", "user": user.id},
                 status=201,
             )
+        except Exception as e:
+            logger.error("Error in LoginView: %s", str(e))
         except IntegrityError as e:
             return JsonResponse(
                 {"error": "Username or email already exists."}, status=400
