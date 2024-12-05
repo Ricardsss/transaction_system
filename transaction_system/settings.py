@@ -16,6 +16,16 @@ import dj_database_url
 from pathlib import Path
 from celery.schedules import crontab
 
+import logging
+
+logger = logging.getLogger(__name__)
+
+logger.debug("Debugging information")
+logger.info("General information")
+logger.warning("Something might be wrong")
+logger.error("Something is definitely wrong")
+logger.critical("Critical error!")
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -204,6 +214,10 @@ LOGGING = {
             "format": "{levelname} {asctime} {module} {message}",
             "style": "{",
         },
+        "simple": {
+            "format": "{levelname} {message}",
+            "style": "{",
+        },
     },
     "handlers": {
         "console": {
@@ -213,11 +227,11 @@ LOGGING = {
     },
     "root": {
         "handlers": ["console"],
-        "level": "ERROR",  # Change to DEBUG temporarily for detailed logs
+        "level": "DEBUG",  # Set to DEBUG for more detailed logs; use INFO in production
     },
     "django": {
         "handlers": ["console"],
-        "level": "ERROR",
+        "level": "DEBUG",
         "propagate": True,
     },
 }
