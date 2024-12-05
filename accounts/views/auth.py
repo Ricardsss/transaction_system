@@ -88,6 +88,7 @@ class LoginView(View):
 @method_decorator(csrf_exempt, name="dispatch")
 class LogoutView(LoginRequiredMixin, View):
     def delete(self, request):
+        logger.info(f"Referer: {request.headers.get('Referer')}")
         logger.info("CSRF" + request.COOKIES.get("csrftoken"))
         logger.info("Token" + request.headers.get("X-CSRFToken"))
         user = request.user
