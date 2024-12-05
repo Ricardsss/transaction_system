@@ -6,13 +6,14 @@ from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 import json
 
 from ..utils import validate_input, validate_role, get_ip_address
 from ..models import AuditLog, User
 
 
-@csrf_exempt
+@method_decorator(csrf_exempt, name="dispatch")
 class RegisterView(View):
     def post(self, request):
         try:
@@ -52,7 +53,7 @@ class RegisterView(View):
             return JsonResponse({"error": "Invalid JSON format."}, status=400)
 
 
-@csrf_exempt
+@method_decorator(csrf_exempt, name="dispatch")
 class LoginView(View):
     def post(self, request):
         data = json.loads(request.body) if request.body else {}
