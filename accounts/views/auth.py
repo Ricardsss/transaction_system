@@ -49,8 +49,6 @@ class RegisterView(View):
                 {"message": "User registered successfully!", "user": user.id},
                 status=201,
             )
-        except Exception as e:
-            logger.error("Error in LoginView: %s", str(e))
         except IntegrityError as e:
             return JsonResponse(
                 {"error": "Username or email already exists."}, status=400
@@ -62,26 +60,35 @@ class RegisterView(View):
 @method_decorator(csrf_exempt, name="dispatch")
 class LoginView(View):
     def post(self, request):
-        data = json.loads(request.body) if request.body else {}
-        errors = validate_input(data, ["username", "password"])
-        if errors:
-            return JsonResponse({"errors": errors}, status=400)
+        try:
+            logger.info("Received request at LoginView")
+            data = json.loads(request.body) if request.body else {}
+            logger.info(f"Request data: {data}")
+            errors = validate_input(data, ["username", "password"])
+            if errors:
+                logger.error(f"Validation errors: {errors}")
+                return JsonResponse({"errors": errors}, status=400)
 
-        username = data["username"]
-        password = data["password"]
+            username = data["username"]
+            password = data["password"]
 
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
-            ip_address = get_ip_address(request)
-            AuditLog.objects.create(
-                user=user,
-                ip_address=ip_address,
-                action="User Login",
-                details={"username": username},
-            )
-            return JsonResponse({"message": "Login successful"})
-        return JsonResponse({"error": "Invalid credentials"}, status=400)
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)
+                ip_address = get_ip_address(request)
+                logger.info(f"User {username} logged in from IP {ip_address}")
+                AuditLog.objects.create(
+                    user=user,
+                    ip_address=ip_address,
+                    action="User Login",
+                    details={"username": username},
+                )
+                return JsonResponse({"message": "Login successful"})
+            logger.warning("Invalid credentials")
+            return JsonResponse({"error": "Invalid credentials"}, status=400)
+        except Exception as e:
+            logger.error(f"Unhandled exception: {str(e)}", exc_info=True)
+            return JsonResponse({"error": "Internal server error"}, status=500)
 
 
 class LogoutView(LoginRequiredMixin, View):

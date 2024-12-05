@@ -33,7 +33,7 @@ SECRET_KEY = os.environ.get(
 IS_HEROKU_APP = "DYNO" in os.environ and not "CI" in os.environ
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 if not IS_HEROKU_APP:
     DEBUG = True
 
@@ -92,7 +92,6 @@ WSGI_APPLICATION = "transaction_system.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
-
 
 if IS_HEROKU_APP:
     CSRF_TRUSTED_ORIGINS = [f"https://{os.environ.get('BASE_URL')}"]
@@ -191,5 +190,31 @@ CELERY_BEAT_SCHEDULE = {
     "process-recurring-transactions": {
         "task": "accounts.tasks.process_recurring_transactions",
         "schedule": crontab(minute=0, hour=0),
+    },
+}
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {
+            "format": "{levelname} {asctime} {module} {message}",
+            "style": "{",
+        },
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "verbose",
+        },
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": "ERROR",  # Change to DEBUG temporarily for detailed logs
+    },
+    "django": {
+        "handlers": ["console"],
+        "level": "ERROR",
+        "propagate": True,
     },
 }
