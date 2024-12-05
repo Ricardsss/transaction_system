@@ -15,6 +15,9 @@ import secrets
 import dj_database_url
 from pathlib import Path
 from celery.schedules import crontab
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -92,6 +95,9 @@ WSGI_APPLICATION = "transaction_system.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
+
+logger.info(os.environ.get("BASE_URL"))
+
 
 if IS_HEROKU_APP:
     CSRF_TRUSTED_ORIGINS = [f"https://{os.environ.get('BASE_URL')}"]
