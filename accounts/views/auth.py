@@ -5,6 +5,7 @@ from django.views import View
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.decorators.csrf import csrf_exempt
 import json
 
 from ..utils import validate_input, validate_role, get_ip_address
@@ -12,6 +13,7 @@ from ..models import AuditLog, User
 
 
 class RegisterView(View):
+    @csrf_exempt
     def post(self, request):
         try:
             data = json.loads(request.body) if request.body else {}
@@ -51,6 +53,7 @@ class RegisterView(View):
 
 
 class LoginView(View):
+    @csrf_exempt
     def post(self, request):
         data = json.loads(request.body) if request.body else {}
         errors = validate_input(data, ["username", "password"])
