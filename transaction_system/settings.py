@@ -20,12 +20,6 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-logger.debug("Debugging information")
-logger.info("General information")
-logger.warning("Something might be wrong")
-logger.error("Something is definitely wrong")
-logger.critical("Critical error!")
-
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -43,7 +37,7 @@ SECRET_KEY = os.environ.get(
 IS_HEROKU_APP = "DYNO" in os.environ and not "CI" in os.environ
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 if not IS_HEROKU_APP:
     DEBUG = True
 
@@ -103,12 +97,9 @@ WSGI_APPLICATION = "transaction_system.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-logger.warning(f"https://{os.environ.get('BASE_URL')}")
-
 
 if IS_HEROKU_APP:
-    # CSRF_TRUSTED_ORIGINS = [f"https://{os.environ.get('BASE_URL')}"]
-    CSRF_TRUSTED_ORIGINS = ["https://banking-system-7994e7127a8c.herokuapp.com"]
+    CSRF_TRUSTED_ORIGINS = [f"https://{os.environ.get('BASE_URL')}"]
     DATABASES = {
         "default": dj_database_url.config(
             env="DATABASE_URL",

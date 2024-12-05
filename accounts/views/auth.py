@@ -61,12 +61,9 @@ class RegisterView(View):
 class LoginView(View):
     def post(self, request):
         try:
-            logger.info("Received request at LoginView")
             data = json.loads(request.body) if request.body else {}
-            logger.info(f"Request data: {data}")
             errors = validate_input(data, ["username", "password"])
             if errors:
-                logger.error(f"Validation errors: {errors}")
                 return JsonResponse({"errors": errors}, status=400)
 
             username = data["username"]
@@ -76,7 +73,6 @@ class LoginView(View):
             if user is not None:
                 login(request, user)
                 ip_address = get_ip_address(request)
-                logger.info(f"User {username} logged in from IP {ip_address}")
                 AuditLog.objects.create(
                     user=user,
                     ip_address=ip_address,
@@ -84,15 +80,15 @@ class LoginView(View):
                     details={"username": username},
                 )
                 return JsonResponse({"message": "Login successful"})
-            logger.warning("Invalid credentials")
             return JsonResponse({"error": "Invalid credentials"}, status=400)
         except Exception as e:
-            logger.error(f"Unhandled exception: {str(e)}", exc_info=True)
             return JsonResponse({"error": "Internal server error"}, status=500)
 
 
 class LogoutView(LoginRequiredMixin, View):
     def delete(self, request):
+        logger.warning("CSRF" + request.COOKIES.get("csrftoken"))
+        logger.warning("Token" + request.headers.get("X-CSRFToken"))
         user = request.user
         logout(request)
         ip_address = get_ip_address(request)
