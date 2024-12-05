@@ -94,6 +94,7 @@ WSGI_APPLICATION = "transaction_system.wsgi.application"
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 if IS_HEROKU_APP:
+    CSRF_TRUSTED_ORIGINS = ["*"]
     DATABASES = {
         "default": dj_database_url.config(
             env="DATABASE_URL",
@@ -103,6 +104,10 @@ if IS_HEROKU_APP:
         ),
     }
 else:
+    CSRF_TRUSTED_ORIGINS = [
+        "http://localhost",
+        "http://127.0.0.1",
+    ]
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.sqlite3",
@@ -164,7 +169,6 @@ STORAGES = {
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-CSRF_TRUSTED_ORIGINS = ["http://localhost", "http://127.0.0.1"]
 
 LOGIN_URL = "/auth/login/"
 
