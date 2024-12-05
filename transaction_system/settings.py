@@ -96,7 +96,7 @@ WSGI_APPLICATION = "transaction_system.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-logger.info(os.environ.get("BASE_URL"))
+logger.info("BASE URL" + os.environ.get("BASE_URL"))
 
 
 if IS_HEROKU_APP:
