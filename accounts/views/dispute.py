@@ -2,10 +2,12 @@ from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
+from django.utils.decorators import method_decorator
 import json
 
 from ..models import Dispute, Transaction
 from ..utils import validate_input, validate_dispute_status, validate_dispute_reason
+from ..decorators import role_required
 
 
 class DisputeListCreateView(LoginRequiredMixin, View):
@@ -58,10 +60,10 @@ class DisputeListCreateView(LoginRequiredMixin, View):
             return JsonResponse({"error": str(e)}, status=400)
 
 
+@method_decorator(role_required("teller"), name="dispatch")
 class DisputeUpdateView(LoginRequiredMixin, View):
     def patch(self, request, pk):
         try:
-            user = request.user
             data = json.loads(request.body) if request.body else {}
             errors = validate_input(data, ["status"])
             if errors:

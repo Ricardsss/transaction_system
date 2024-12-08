@@ -16,6 +16,9 @@ import dj_database_url
 import logging
 from pathlib import Path
 from celery.schedules import crontab
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 logger = logging.getLogger(__name__)
@@ -33,8 +36,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.environ.get(
     "SECRET_KEY",
-    default=secrets.token_urlsafe(nbytes=64),
+    default=os.getenv("SECRET_KEY"),
 )
+
 
 IS_HEROKU_APP = "DYNO" in os.environ and not "CI" in os.environ
 
@@ -73,6 +77,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "accounts.middleware.RoleRequiredMiddleware",
 ]
 
 ROOT_URLCONF = "transaction_system.urls"
@@ -198,7 +203,7 @@ else:  # Development settings
 CELERY_BEAT_SCHEDULE = {
     "process-recurring-transactions": {
         "task": "accounts.tasks.process_recurring_transactions",
-        "schedule": crontab(minute=0, hour=0),
+        "schedule": 1,
     },
 }
 

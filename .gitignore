@@ -13,3 +13,5 @@ db.sqlite3
 # Redis and Celery files
 celerybeat-schedule.db
 dump.rdb
+
+.env
