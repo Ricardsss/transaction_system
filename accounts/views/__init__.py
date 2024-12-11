@@ -6,4 +6,4 @@ from .recurring_transaction import (
     RecurringTransactionUpdateCancelView,
 )
 from .dispute import DisputeListCreateView, DisputeUpdateView
-from .report import AccountStatementView
+from .report import AccountStatementView, InternalReportView

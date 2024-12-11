@@ -7,7 +7,7 @@ import json
 
 from ..models import Dispute, Transaction
 from ..utils import validate_input, validate_dispute_status, validate_dispute_reason
-from ..decorators import role_required
+from ..decorators import roles_required
 
 
 class DisputeListCreateView(LoginRequiredMixin, View):
@@ -60,7 +60,7 @@ class DisputeListCreateView(LoginRequiredMixin, View):
             return JsonResponse({"error": str(e)}, status=400)
 
 
-@method_decorator(role_required("teller"), name="dispatch")
+@method_decorator(roles_required(["teller", "admin"]), name="dispatch")
 class DisputeUpdateView(LoginRequiredMixin, View):
     def patch(self, request, pk):
         try:

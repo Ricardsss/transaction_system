@@ -25,7 +25,7 @@ class DepositView(LoginRequiredMixin, View):
             account.save()
             transaction = Transaction.objects.create(
                 user=user,
-                source_account=account,
+                destination_account=account,
                 transaction_type="deposit",
                 amount=amount,
             )

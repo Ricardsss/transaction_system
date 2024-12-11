@@ -11,6 +11,7 @@ from .views import (
     DisputeListCreateView,
     DisputeUpdateView,
     AccountStatementView,
+    InternalReportView,
 )
 
 
@@ -36,5 +37,10 @@ urlpatterns = [
         "reports/account-statement/",
         AccountStatementView.as_view(),
         name="account_statement",
+    ),
+    path(
+        "reports/internal-summary/",
+        InternalReportView.as_view(),
+        name="internal_summary",
     ),
 ]
