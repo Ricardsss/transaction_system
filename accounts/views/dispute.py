@@ -14,7 +14,7 @@ class DisputeListCreateView(LoginRequiredMixin, View):
     def get(self, request):
         try:
             user = request.user
-            if user.is_employee():
+            if user.is_teller() or user.is_admin():
                 disputes = Dispute.objects.all()
             else:
                 disputes = Dispute.objects.filter(user=user)

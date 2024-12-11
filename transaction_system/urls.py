@@ -6,7 +6,6 @@ from .views import set_csrftoken
 
 
 urlpatterns = [
-    # Only used in development
     path("", set_csrftoken, name="token"),
     path("auth/register/", RegisterView.as_view(), name="register"),
     path("auth/login/", LoginView.as_view(), name="login"),

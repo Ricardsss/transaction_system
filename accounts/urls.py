@@ -10,6 +10,7 @@ from .views import (
     RecurringTransactionUpdateCancelView,
     DisputeListCreateView,
     DisputeUpdateView,
+    AccountStatementView,
 )
 
 
@@ -31,4 +32,9 @@ urlpatterns = [
     ),
     path("disputes/", DisputeListCreateView.as_view(), name="dispute_list_create"),
     path("disputes/<uuid:pk>/", DisputeUpdateView.as_view(), name="dispute_update"),
+    path(
+        "reports/account-statement/",
+        AccountStatementView.as_view(),
+        name="account_statement",
+    ),
 ]
