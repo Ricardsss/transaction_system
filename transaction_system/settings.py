@@ -187,12 +187,18 @@ LOGIN_URL = "/auth/login/"
 
 redis_url = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
 
+BROKER_USE_SSL = None
+RESULT_BACKEND_USE_SSL = None
+
 if redis_url.startswith("rediss://"):
-    CELERY_BROKER_USE_SSL = {"ssl_cert_reqs": ssl.CERT_REQUIRED}
-    CELERY_RESULT_BACKEND_USE_SSL = CELERY_BROKER_USE_SSL
+    BROKER_USE_SSL = {"ssl_cert_reqs": "CERT_REQUIRED"}
+    RESULT_BACKEND_USE_SSL = BROKER_USE_SSL
 
 CELERY_BROKER_URL = redis_url
 CELERY_RESULT_BACKEND = redis_url
+
+CELERY_BROKER_USE_SSL = BROKER_USE_SSL
+CELERY_RESULT_BACKEND_USE_SSL = RESULT_BACKEND_USE_SSL
 
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
