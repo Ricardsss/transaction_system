@@ -184,6 +184,11 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 LOGIN_URL = "/auth/login/"
 
+CELERY_BROKER_URL = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
+CELERY_RESULT_BACKEND = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
+CELERY_ACCEPT_CONTENT = ["json"]
+CELERY_TASK_SERIALIZER = "json"
+
 
 if not DEBUG:  # Production settings
     SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
@@ -197,8 +202,7 @@ else:  # Development settings
     CSRF_COOKIE_SECURE = False
     SESSION_COOKIE_SECURE = False
     SESSION_COOKIE_AGE = 3600
-    CELERY_BROKER_URL = "redis://localhost:6379"
-    CELERY_RESULT_BACKEND = "redis://localhost:6379"
+
 
 CELERY_BEAT_SCHEDULE = {
     "process-recurring-transactions": {
