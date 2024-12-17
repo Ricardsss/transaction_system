@@ -207,7 +207,7 @@ else:  # Development settings
 CELERY_BEAT_SCHEDULE = {
     "process-recurring-transactions": {
         "task": "accounts.tasks.process_recurring_transactions",
-        "schedule": 1,
+        "schedule": crontab(minute=0, hour=0),
     },
 }
 
