@@ -10,14 +10,13 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
-import ssl
 import os
 import dj_database_url
 import logging
 from pathlib import Path
 from celery.schedules import crontab
 from dotenv import load_dotenv
-from urllib.parse import urlparse
+from urllib.parse import urlparse, urlunparse
 
 load_dotenv()
 
@@ -187,18 +186,28 @@ LOGIN_URL = "/auth/login/"
 
 redis_url = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
 
-BROKER_USE_SSL = None
-RESULT_BACKEND_USE_SSL = None
+# BROKER_USE_SSL = None
+# RESULT_BACKEND_USE_SSL = None
 
 if redis_url.startswith("rediss://"):
-    BROKER_USE_SSL = {"ssl_cert_reqs": "CERT_REQUIRED"}
-    RESULT_BACKEND_USE_SSL = BROKER_USE_SSL
+    parsed_url = urlparse(redis_url)
+    query = "ssl_cert_reqs=CERT_REQUIRED"
+    redis_url = urlunparse(
+        (
+            parsed_url.scheme,
+            parsed_url.netloc,
+            parsed_url.path,
+            parsed_url.params,
+            query,
+            parsed_url.fragment,
+        )
+    )
 
 CELERY_BROKER_URL = redis_url
 CELERY_RESULT_BACKEND = redis_url
 
-CELERY_BROKER_USE_SSL = BROKER_USE_SSL
-CELERY_RESULT_BACKEND_USE_SSL = RESULT_BACKEND_USE_SSL
+# CELERY_BROKER_USE_SSL = BROKER_USE_SSL
+# CELERY_RESULT_BACKEND_USE_SSL = RESULT_BACKEND_USE_SSL
 
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
