@@ -191,7 +191,7 @@ redis_url = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
 
 if redis_url.startswith("rediss://"):
     parsed_url = urlparse(redis_url)
-    query = "ssl_cert_reqs=CERT_REQUIRED"
+    query = "ssl_cert_reqs=CERT_NONE"
     redis_url = urlunparse(
         (
             parsed_url.scheme,
