@@ -368,7 +368,7 @@ Response:
 
 #### Generate Internal Report
 
-**GET** `/accounts/disputes/<uuid:pk>/`
+**GET** `/accounts/reports/internal-summary/`
 
 ```json
 Response:
