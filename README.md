@@ -387,11 +387,10 @@ Response:
 
 1. Clone the repository.
 2. Change into the project folder
+
    ```bash
    cd transaction_system
    ```
-
-````
 
 3. Install the required dependencies:
    ```bash
@@ -410,4 +409,3 @@ Response:
 ## Online Access
 
 This API is also accessible via Heroku. In order to reduce costs, the url is only available upon request. If you would like access to test it out, please contact me via my email address on my resume.
-````
