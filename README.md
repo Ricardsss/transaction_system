@@ -370,7 +370,7 @@ Response:
 
 **GET** `/accounts/disputes/<uuid:pk>/`
 
-````json
+```json
 Response:
 {
   "total_deposits": 10000.0,
@@ -379,6 +379,7 @@ Response:
   "net_balance": 7000.0,
   "transaction_count": 45
 }
+```
 
 ---
 
@@ -388,6 +389,8 @@ Response:
 2. Change into the project folder
    ```bash
    cd transaction_system
+   ```
+
 ````
 
 3. Install the required dependencies:
@@ -407,3 +410,4 @@ Response:
 ## Online Access
 
 This API is also accessible via Heroku. In order to reduce costs, the url is only available upon request. If you would like access to test it out, please contact me via my email address on my resume.
+````
