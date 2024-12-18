@@ -325,6 +325,61 @@ Response:
 }
 ```
 
+### Reports
+
+#### Generate Account Statement
+
+**GET** `/accounts/reports/account-statement/?account_id=<uuid>&start_date=<YYYY-MM-DD>&end_date=<YYYY-MM-DD>`
+
+```json
+Response:
+{
+  "account": {
+    "account_number": "1234567890",
+    "account_type": "savings"
+  },
+  "outgoing_transactions": [
+    {
+      "id": "uuid-of-transaction",
+      "transaction_type": "withdrawal",
+      "amount": "200.00",
+      "description": "ATM withdrawal",
+      "created_at": "2024-01-05T10:30:00Z"
+    },
+    {
+      "id": "uuid-of-transaction",
+      "transaction_type": "transfer",
+      "amount": "300.00",
+      "description": "Transfer to checking account",
+      "created_at": "2024-01-10T14:20:00Z"
+    }
+  ],
+  "incoming_transactions": [
+    {
+      "id": "uuid-of-transaction",
+      "transaction_type": "deposit",
+      "amount": "500.00",
+      "description": "Salary deposit",
+      "created_at": "2024-01-08T09:15:00Z"
+    }
+  ]
+}
+```
+
+#### Generate Internal Report
+
+**GET** `/accounts/disputes/<uuid:pk>/`
+
+````json
+Response:
+{
+  "total_deposits": 10000.0,
+  "total_withdrawal": 3000.0,
+  "total_transfers": 2000.0,
+  "net_balance": 7000.0,
+  "transaction_count": 45
+}
+
 ---
 
 ## Setup Instructions
@@ -333,7 +388,8 @@ Response:
 2. Change into the project folder
    ```bash
    cd transaction_system
-   ```
+````
+
 3. Install the required dependencies:
    ```bash
    pip install -r requirements.txt
@@ -346,6 +402,7 @@ Response:
    ```bash
    python manage.py runserver
    ```
+6. Create a .env file in the root folder and add SECRET_KEY and set it to a secret key generated from https://djecrety.ir.
 
 ## Online Access
 

@@ -45,7 +45,6 @@ class AccountStatementView(LoginRequiredMixin, View):
 class InternalReportView(LoginRequiredMixin, View):
     def get(self, request):
         try:
-            user = request.user
             total_deposits = Transaction.objects.filter(
                 transaction_type="deposit"
             ).aggregate(Sum("amount"))["amount__sum"]
